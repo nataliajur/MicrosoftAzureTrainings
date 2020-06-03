@@ -1,0 +1,8 @@
+Exercise: Develop and configure an ASP.NET application that queries an Azure SQL database 
+Author: Microsoft Learn
+Components:
+* Index.cshtml
+* Index.cshtml.cs
+* CoursesAndModules.cs
+* DataAccessController.cs
+* Azure SQL Database

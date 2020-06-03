@@ -1,0 +1,37 @@
+
+#create webapp
+WEBAPPNAME=educationapp-$RANDOM
+az webapp up \
+    --resource-group learn-8dafac57-1ffa-4650-a986-2d52280656ae \
+    --location centralus \
+    --sku F1 \
+    --name $WEBAPPNAME
+	
+# deploy webapp
+az webapp up \
+    --resource-group learn-8dafac57-1ffa-4650-a986-2d52280656ae \
+    --name $WEBAPPNAME
+	
+# bulk import data from csv to azure sql db
+# prereq: tables need to exist
+
+export DATABASE_NAME=coursedatabaseNNN
+export DATABASE_SERVER=courseserverNNN
+export AZURE_USER=azuresql
+export AZURE_PASSWORD=[enter your password]
+
+bcp "$DATABASE_NAME.dbo.courses" format nul -c -f courses.fmt -t, -S "$DATABASE_SERVER.database.windows.net" -U $AZURE_USER -P $AZURE_PASSWORD
+
+code courses.fmt
+
+bcp "$DATABASE_NAME.dbo.courses" in courses.csv -f courses.fmt -S "$DATABASE_SERVER.database.windows.net" -U $AZURE_USER -P $AZURE_PASSWORD -F 2
+
+bcp "$DATABASE_NAME.dbo.modules" format nul -c -f modules.fmt -t, -S "$DATABASE_SERVER.database.windows.net" -U $AZURE_USER -P $AZURE_PASSWORD
+
+bcp "$DATABASE_NAME.dbo.modules" in modules.csv -f modules.fmt -S "$DATABASE_SERVER.database.windows.net" -U $AZURE_USER -P $AZURE_PASSWORD -F 2
+
+bcp "$DATABASE_NAME.dbo.studyplans" format nul -c -f studyplans.fmt -t, -S "$DATABASE_SERVER.database.windows.net" -U $AZURE_USER -P $AZURE_PASSWORD
+
+bcp "$DATABASE_NAME.dbo.studyplans" in studyplans.csv -f studyplans.fmt -S "$DATABASE_SERVER.database.windows.net" -U $AZURE_USER -P $AZURE_PASSWORD -F 2
+
+
